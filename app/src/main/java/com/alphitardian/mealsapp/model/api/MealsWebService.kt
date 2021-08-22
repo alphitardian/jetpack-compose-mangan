@@ -2,6 +2,7 @@ package com.alphitardian.mealsapp.model.api
 
 import com.alphitardian.mealsapp.model.response.MealCategoriesResponse
 import com.alphitardian.mealsapp.model.response.MealCategoryResponse
+import com.alphitardian.mealsapp.model.response.MealDetailResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -23,6 +24,10 @@ class MealsWebService {
 
     suspend fun getMealCategory(name : String) : MealCategoryResponse {
         return api.getCategoryMeals(name)
+    }
+
+    suspend fun getMealDetail(id : String) : MealDetailResponse {
+        return api.getMealDetail(id)
     }
 
 }

@@ -1,4 +1,4 @@
-package com.alphitardian.mealsapp.ui.category.detail
+package com.alphitardian.mealsapp.ui.categorydetail
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -14,10 +14,13 @@ class CategoryDetailViewModel(private val repository: MealRepository = MealRepos
     val mealCategoryState: MutableState<List<MealCategoryListResponse>> =
         mutableStateOf(emptyList())
 
+    var loading = mutableStateOf(true)
+
     fun getCategory(name : String) {
         viewModelScope.launch(Dispatchers.IO) {
             val categoryList = repository.getCategory(name).meals
             mealCategoryState.value = categoryList
+            loading.value = false
         }
     }
 
