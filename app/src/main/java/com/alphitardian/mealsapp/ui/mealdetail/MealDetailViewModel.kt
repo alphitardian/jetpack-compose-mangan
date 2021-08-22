@@ -13,10 +13,13 @@ class MealDetailViewModel(private val repository: MealRepository = MealRepositor
 
     val mealDetails : MutableState<MealDetail?> = mutableStateOf(null)
 
+    var loading = mutableStateOf(true)
+
     fun getMealDetail(id : String) {
         viewModelScope.launch(Dispatchers.IO) {
             val detail = repository.getMealDetail(id).meals
             mealDetails.value = detail[0]
+            loading.value = false
         }
     }
 }

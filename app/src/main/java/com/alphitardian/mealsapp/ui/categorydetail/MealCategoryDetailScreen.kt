@@ -10,8 +10,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,13 +36,10 @@ fun MealCategoryDetailScreen(categoryName: String, navController: NavHostControl
     viewModel.getCategory(categoryName)
     val mealCategory = viewModel.mealCategoryState.value
     val loading = viewModel.loading.value
+    val bottomSheetValue = viewModel.bottomSheetValue.value
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
-
-    var temp: MealCategoryListResponse? by remember {
-        mutableStateOf(null)
-    }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -49,9 +48,11 @@ fun MealCategoryDetailScreen(categoryName: String, navController: NavHostControl
                 scope.launch {
                     scaffoldState.snackbarHostState.showSnackbar("Option Menu Coming Soon!")
                 }
+            }, actionBackNavigation = {
+                navController?.popBackStack()
             })
         },
-        sheetContent = { DetailBottomSheet(meal = temp) },
+        sheetContent = { DetailBottomSheet(meal = bottomSheetValue) },
         sheetPeekHeight = 0.dp,
         sheetShape = RoundedCornerShape(16.dp)
     ) {
@@ -63,17 +64,17 @@ fun MealCategoryDetailScreen(categoryName: String, navController: NavHostControl
                     CategoryItemTiles(meal = item, actionClick = {
                         scope.launch {
                             scaffoldState.bottomSheetState.collapse()
-                            temp = null
+                            viewModel.bottomSheetValue.value = null
                             navController?.navigate("meal/${item.id}")
                         }
                     }, actionLongClick = {
                         scope.launch {
                             if (scaffoldState.bottomSheetState.isCollapsed) {
-                                temp = item
+                                viewModel.bottomSheetValue.value = item
                                 scaffoldState.bottomSheetState.expand()
                             } else {
                                 scaffoldState.bottomSheetState.collapse()
-                                temp = null
+                                viewModel.bottomSheetValue.value = null
                             }
                         }
                     })
@@ -90,29 +91,40 @@ fun CategoryItemTiles(
     actionClick: () -> Unit,
     actionLongClick: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .combinedClickable(onClick = actionClick, onLongClick = actionLongClick)
-    ) {
-        Card(
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .width(75.dp)
-                .height(75.dp)
-                .padding(16.dp)
+                .fillMaxWidth()
+                .combinedClickable(onClick = actionClick, onLongClick = actionLongClick)
         ) {
-            Image(
-                painter = rememberImagePainter(data = meal.imageUrl),
-                contentDescription = meal.mealName,
-            )
+            Card(
+                modifier = Modifier
+                    .width(75.dp)
+                    .height(75.dp)
+                    .padding(16.dp)
+            ) {
+                Image(
+                    painter = rememberImagePainter(data = meal.imageUrl),
+                    contentDescription = meal.mealName,
+                )
+            }
+            Text(text = meal.mealName, fontWeight = FontWeight.Bold)
         }
-        Text(text = meal.mealName, fontWeight = FontWeight.Bold)
+        Divider(
+            color = Color(0xffEEEEEE),
+            thickness = 1.dp,
+            modifier = Modifier.padding(horizontal = 24.dp)
+        )
     }
 }
 
 @Composable
-fun CategoryDetailTopAppBar(name: String, actionOptionClick: () -> Unit) {
+fun CategoryDetailTopAppBar(
+    name: String,
+    actionOptionClick: () -> Unit,
+    actionBackNavigation: () -> Unit
+) {
     TopAppBar(
         title = {
             Text(
@@ -127,6 +139,15 @@ fun CategoryDetailTopAppBar(name: String, actionOptionClick: () -> Unit) {
                 contentDescription = "Option Icon",
                 tint = Color.Black,
                 modifier = Modifier.clickable(onClick = actionOptionClick)
+            )
+        },
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = "Arrow Back Icon",
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clickable(onClick = actionBackNavigation)
             )
         },
         backgroundColor = Color.White

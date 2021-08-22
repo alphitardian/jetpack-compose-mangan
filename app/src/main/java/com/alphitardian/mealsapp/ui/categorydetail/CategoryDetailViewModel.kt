@@ -11,10 +11,9 @@ import kotlinx.coroutines.launch
 
 class CategoryDetailViewModel(private val repository: MealRepository = MealRepository()) : ViewModel() {
 
-    val mealCategoryState: MutableState<List<MealCategoryListResponse>> =
-        mutableStateOf(emptyList())
-
+    val mealCategoryState: MutableState<List<MealCategoryListResponse>> = mutableStateOf(emptyList())
     var loading = mutableStateOf(true)
+    var bottomSheetValue : MutableState<MealCategoryListResponse?> = mutableStateOf(null)
 
     fun getCategory(name : String) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -9,9 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.alphitardian.mealsapp.model.response.CategoryResponse
 import com.alphitardian.mealsapp.ui.composable.CircularLoadingIndicator
+import com.alphitardian.mealsapp.ui.composable.DrawerContent
 import com.alphitardian.mealsapp.ui.theme.MealsAppTheme
 import kotlinx.coroutines.launch
 
@@ -39,13 +40,10 @@ fun MealCategoriesScreen(navController: NavHostController?) {
     val viewModel: MealCategoryViewModel = viewModel()
     val categories = viewModel.mealCategoryState.value
     val loading = viewModel.loading.value
+    val bottomSheetValue = viewModel.bottomSheetValue.value
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
-
-    var temp: CategoryResponse? by remember {
-        mutableStateOf(null)
-    }
 
     BottomSheetScaffold(
         topBar = {
@@ -53,12 +51,21 @@ fun MealCategoriesScreen(navController: NavHostController?) {
                 scope.launch {
                     scaffoldState.snackbarHostState.showSnackbar("Option Menu Coming Soon!")
                 }
+            }, actionDrawer = {
+                scope.launch {
+                    scaffoldState.drawerState.open()
+                }
             })
         },
         scaffoldState = scaffoldState,
         sheetShape = RoundedCornerShape(16.dp),
-        sheetContent = { CategoryBottomSheet(category = temp) },
-        sheetPeekHeight = 0.dp
+        sheetContent = { CategoryBottomSheet(category = bottomSheetValue) },
+        sheetPeekHeight = 0.dp,
+        drawerContent = {
+            DrawerContent(navController = navController)
+        },
+        drawerGesturesEnabled = true,
+        drawerBackgroundColor = Color.White
     ) {
         if (loading) {
             CircularLoadingIndicator(isDisplay = loading)
@@ -71,17 +78,17 @@ fun MealCategoriesScreen(navController: NavHostController?) {
                     MealCategoryCard(category = item, actionClick = {
                         scope.launch {
                             scaffoldState.bottomSheetState.collapse()
-                            temp = null
+                            viewModel.bottomSheetValue.value = null
                             navController?.navigate("category/detail/${item.category}")
                         }
                     }, actionLongClick = {
                         scope.launch {
                             if (scaffoldState.bottomSheetState.isCollapsed) {
-                                temp = item
+                                viewModel.bottomSheetValue.value = item
                                 scaffoldState.bottomSheetState.expand()
                             } else {
                                 scaffoldState.bottomSheetState.collapse()
-                                temp = null
+                                viewModel.bottomSheetValue.value = null
                             }
                         }
                     })
@@ -183,13 +190,23 @@ fun CategoryBottomSheet(category: CategoryResponse?) {
 }
 
 @Composable
-fun CategoryTopAppBar(actionOptionClick: () -> Unit) {
+fun CategoryTopAppBar(actionOptionClick: () -> Unit, actionDrawer: () -> Unit) {
     TopAppBar(
         title = {
             Text(
                 text = "Mangan.",
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily.Serif
+            )
+        },
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "Menu Drawer Icon",
+                tint = Color.Black,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clickable(onClick = actionDrawer)
             )
         },
         actions = {

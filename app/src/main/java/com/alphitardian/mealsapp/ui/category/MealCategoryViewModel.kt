@@ -1,7 +1,6 @@
 package com.alphitardian.mealsapp.ui.category
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphitardian.mealsapp.model.MealRepository
@@ -11,6 +10,10 @@ import kotlinx.coroutines.launch
 class MealCategoryViewModel(private val repository: MealRepository = MealRepository()) :
     ViewModel() {
 
+    val mealCategoryState: MutableState<List<CategoryResponse>> = mutableStateOf(emptyList())
+    var loading = mutableStateOf(true)
+    var bottomSheetValue: MutableState<CategoryResponse?> = mutableStateOf(null)
+
     init {
         viewModelScope.launch {
             val meals = getMealCategories()
@@ -18,11 +21,6 @@ class MealCategoryViewModel(private val repository: MealRepository = MealReposit
             loading.value = false
         }
     }
-
-    val mealCategoryState: MutableState<List<CategoryResponse>> =
-        mutableStateOf(emptyList())
-
-    var loading = mutableStateOf(true)
 
     private suspend fun getMealCategories(): List<CategoryResponse> {
         return repository.getMealCategories().categories
