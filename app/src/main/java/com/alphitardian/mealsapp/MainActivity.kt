@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.alphitardian.mealsapp.ui.category.MealCategoriesScreen
 import com.alphitardian.mealsapp.ui.categorydetail.MealCategoryDetailScreen
 import com.alphitardian.mealsapp.ui.country.MealCountriesScreen
+import com.alphitardian.mealsapp.ui.countrydetail.CountryDetailScreen
 import com.alphitardian.mealsapp.ui.mealdetail.MealDetailScreen
 import com.alphitardian.mealsapp.ui.theme.MealsAppTheme
 
@@ -59,6 +60,17 @@ fun MainApp() {
         ) {
             MealCategoryDetailScreen(
                 categoryName = it.arguments!!.getString("categoryName").toString(),
+                navController = navController
+            )
+        }
+        composable(
+            route = "country/detail/{countryName}",
+            arguments = listOf(navArgument("countryName") {
+                type = NavType.StringType
+            })
+        ) {
+            CountryDetailScreen(
+                country = it.arguments!!.getString("countryName").toString(),
                 navController = navController
             )
         }

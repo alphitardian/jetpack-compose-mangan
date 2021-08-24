@@ -2,30 +2,26 @@ package com.alphitardian.mealsapp.ui.categorydetail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
-import com.alphitardian.mealsapp.model.response.MealCategoryListResponse
+import com.alphitardian.mealsapp.model.response.MealResponse
 import com.alphitardian.mealsapp.ui.composable.CircularLoadingIndicator
+import com.alphitardian.mealsapp.ui.composable.MealCard
+import com.alphitardian.mealsapp.ui.composable.SimpleTopAppBar
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
@@ -44,11 +40,7 @@ fun MealCategoryDetailScreen(categoryName: String, navController: NavHostControl
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            CategoryDetailTopAppBar(name = categoryName, actionOptionClick = {
-                scope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar("Option Menu Coming Soon!")
-                }
-            }, actionBackNavigation = {
+            SimpleTopAppBar(name = categoryName, actionBackNavigation = {
                 navController?.popBackStack()
             })
         },
@@ -59,9 +51,12 @@ fun MealCategoryDetailScreen(categoryName: String, navController: NavHostControl
         if (loading) {
             CircularLoadingIndicator(isDisplay = loading)
         } else {
-            LazyColumn {
+            LazyVerticalGrid(
+                cells = GridCells.Adaptive(minSize = 150.dp),
+                contentPadding = PaddingValues(4.dp)
+            ) {
                 items(mealCategory) { item ->
-                    CategoryItemTiles(meal = item, actionClick = {
+                    MealCard(meal = item, actionClick = {
                         scope.launch {
                             scaffoldState.bottomSheetState.collapse()
                             viewModel.bottomSheetValue.value = null
@@ -84,78 +79,8 @@ fun MealCategoryDetailScreen(categoryName: String, navController: NavHostControl
     }
 }
 
-@ExperimentalFoundationApi
 @Composable
-fun CategoryItemTiles(
-    meal: MealCategoryListResponse,
-    actionClick: () -> Unit,
-    actionLongClick: () -> Unit
-) {
-    Column {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .combinedClickable(onClick = actionClick, onLongClick = actionLongClick)
-        ) {
-            Card(
-                modifier = Modifier
-                    .width(75.dp)
-                    .height(75.dp)
-                    .padding(16.dp)
-            ) {
-                Image(
-                    painter = rememberImagePainter(data = meal.imageUrl),
-                    contentDescription = meal.mealName,
-                )
-            }
-            Text(text = meal.mealName, fontWeight = FontWeight.Bold)
-        }
-        Divider(
-            color = Color(0xffEEEEEE),
-            thickness = 1.dp,
-            modifier = Modifier.padding(horizontal = 24.dp)
-        )
-    }
-}
-
-@Composable
-fun CategoryDetailTopAppBar(
-    name: String,
-    actionOptionClick: () -> Unit,
-    actionBackNavigation: () -> Unit
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = name,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif
-            )
-        },
-        actions = {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "Option Icon",
-                tint = Color.Black,
-                modifier = Modifier.clickable(onClick = actionOptionClick)
-            )
-        },
-        navigationIcon = {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Arrow Back Icon",
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .clickable(onClick = actionBackNavigation)
-            )
-        },
-        backgroundColor = Color.White
-    )
-}
-
-@Composable
-fun DetailBottomSheet(meal: MealCategoryListResponse?) {
+fun DetailBottomSheet(meal: MealResponse?) {
     Box(
         modifier = Modifier
             .height(400.dp)

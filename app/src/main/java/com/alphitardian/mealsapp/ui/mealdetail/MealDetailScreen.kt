@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.alphitardian.mealsapp.ui.composable.CircularLoadingIndicator
+import com.alphitardian.mealsapp.ui.composable.SimpleTopAppBar
 
 @Composable
 fun MealDetailScreen(id: String, navController: NavController?) {
@@ -34,7 +35,7 @@ fun MealDetailScreen(id: String, navController: NavController?) {
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            MealDetailTopAppBar(name = mealDetails?.name.orEmpty(), actionBackNavigation = {
+            SimpleTopAppBar(name = mealDetails?.name.orEmpty(), actionBackNavigation = {
                 navController?.popBackStack()
             })
         }
@@ -65,30 +66,4 @@ fun MealDetailScreen(id: String, navController: NavController?) {
             }
         }
     }
-}
-
-@Composable
-fun MealDetailTopAppBar(
-    name: String,
-    actionBackNavigation: () -> Unit
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = name,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif
-            )
-        },
-        navigationIcon = {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Arrow Back Icon",
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .clickable(onClick = actionBackNavigation)
-            )
-        },
-        backgroundColor = Color.White
-    )
 }

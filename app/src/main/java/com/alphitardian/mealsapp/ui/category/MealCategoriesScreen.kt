@@ -205,8 +205,8 @@ fun CategoryTopAppBar(actionOptionClick: () -> Unit, actionDrawer: () -> Unit) {
                 contentDescription = "Menu Drawer Icon",
                 tint = Color.Black,
                 modifier = Modifier
-                    .padding(start = 8.dp)
                     .clickable(onClick = actionDrawer)
+                    .padding(8.dp)
             )
         },
         actions = {

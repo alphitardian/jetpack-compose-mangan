@@ -1,8 +1,6 @@
 package com.alphitardian.mealsapp.model.api
 
-import com.alphitardian.mealsapp.model.response.MealCategoriesResponse
-import com.alphitardian.mealsapp.model.response.MealCategoryResponse
-import com.alphitardian.mealsapp.model.response.MealDetailResponse
+import com.alphitardian.mealsapp.model.response.*
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -15,4 +13,10 @@ interface MealsApi {
 
     @GET("lookup.php")
     suspend fun getMealDetail(@Query("i") id : String) : MealDetailResponse
+
+    @GET("list.php?a=list")
+    suspend fun getCountries() : CountriesResponse
+
+    @GET("filter.php")
+    suspend fun getCountryMeals(@Query("a") country : String) : CountryMealsResponse
 }

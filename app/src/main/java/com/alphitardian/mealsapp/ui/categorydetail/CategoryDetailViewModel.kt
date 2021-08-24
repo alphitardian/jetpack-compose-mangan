@@ -5,15 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.alphitardian.mealsapp.model.MealRepository
-import com.alphitardian.mealsapp.model.response.MealCategoryListResponse
+import com.alphitardian.mealsapp.model.response.MealResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CategoryDetailViewModel(private val repository: MealRepository = MealRepository()) : ViewModel() {
 
-    val mealCategoryState: MutableState<List<MealCategoryListResponse>> = mutableStateOf(emptyList())
+    val mealCategoryState: MutableState<List<MealResponse>> = mutableStateOf(emptyList())
     var loading = mutableStateOf(true)
-    var bottomSheetValue : MutableState<MealCategoryListResponse?> = mutableStateOf(null)
+    var bottomSheetValue : MutableState<MealResponse?> = mutableStateOf(null)
 
     fun getCategory(name : String) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -6,15 +6,5 @@ import kotlinx.parcelize.Parcelize
 
 data class MealCategoryResponse(
     @SerializedName("meals")
-    val meals: List<MealCategoryListResponse>
+    val meals: List<MealResponse>
 )
-
-@Parcelize
-data class MealCategoryListResponse(
-    @SerializedName("strMeal")
-    val mealName : String,
-    @SerializedName("strMealThumb")
-    val imageUrl: String,
-    @SerializedName("idMeal")
-    val id: String,
-) : Parcelable
