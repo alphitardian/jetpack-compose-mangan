@@ -36,4 +36,8 @@ class MealsWebService {
         return api.getCountryMeals(country)
     }
 
+    suspend fun getSearchMeals(name: String) : MealDetailResponse {
+        return api.getSearchMeals(name)
+    }
+
 }

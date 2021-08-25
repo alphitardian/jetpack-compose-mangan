@@ -18,6 +18,7 @@ import com.alphitardian.mealsapp.ui.categorydetail.MealCategoryDetailScreen
 import com.alphitardian.mealsapp.ui.country.MealCountriesScreen
 import com.alphitardian.mealsapp.ui.countrydetail.CountryDetailScreen
 import com.alphitardian.mealsapp.ui.mealdetail.MealDetailScreen
+import com.alphitardian.mealsapp.ui.search.MealsSearchScreen
 import com.alphitardian.mealsapp.ui.theme.MealsAppTheme
 
 @ExperimentalMaterialApi
@@ -49,6 +50,9 @@ fun MainApp() {
         }
         composable(route = "country") {
             MealCountriesScreen(navController = navController)
+        }
+        composable(route = "search") {
+            MealsSearchScreen(navController = navController)
         }
 
         // Detail

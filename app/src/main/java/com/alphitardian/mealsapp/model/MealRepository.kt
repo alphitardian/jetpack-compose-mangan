@@ -23,4 +23,8 @@ class MealRepository(private val webService: MealsWebService = MealsWebService()
     suspend fun getCountryMeals(country : String) : CountryMealsResponse {
         return webService.getCountryMeals(country)
     }
+
+    suspend fun getSearchMeals(name : String) : MealDetailResponse {
+        return webService.getSearchMeals(name)
+    }
 }

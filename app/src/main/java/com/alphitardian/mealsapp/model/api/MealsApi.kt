@@ -19,4 +19,7 @@ interface MealsApi {
 
     @GET("filter.php")
     suspend fun getCountryMeals(@Query("a") country : String) : CountryMealsResponse
+
+    @GET("search.php")
+    suspend fun getSearchMeals(@Query("s") name : String) : MealDetailResponse
 }

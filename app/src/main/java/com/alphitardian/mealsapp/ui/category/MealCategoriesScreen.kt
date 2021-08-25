@@ -49,7 +49,7 @@ fun MealCategoriesScreen(navController: NavHostController?) {
         topBar = {
             CategoryTopAppBar(actionOptionClick = {
                 scope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar("Option Menu Coming Soon!")
+                    navController?.navigate("search")
                 }
             }, actionDrawer = {
                 scope.launch {
@@ -212,17 +212,11 @@ fun CategoryTopAppBar(actionOptionClick: () -> Unit, actionDrawer: () -> Unit) {
         actions = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Option Icon",
+                contentDescription = "Search Icon",
                 tint = Color.Black,
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .clickable(onClick = actionOptionClick)
-            )
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "Option Icon",
-                tint = Color.Black,
-                modifier = Modifier.clickable(onClick = actionOptionClick)
             )
         },
         backgroundColor = Color.White
